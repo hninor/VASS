@@ -33,11 +33,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             VassPruebaTheme {
-                val snackbarHostState = remember { SnackbarHostState() }
+
                 // A surface container using the 'background' color from the theme
                 Scaffold(
                     topBar = { TopAppBar({ Text(stringResource(R.string.app_name)) }) },
-                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                    snackbarHost = { SnackbarHost(viewModel.snackbarHostState) },
                 ) { paddingValues ->
                     Box(Modifier.padding(paddingValues)) {
                         MainNavHost(viewModel)

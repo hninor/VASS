@@ -1,10 +1,13 @@
 package com.hninor.vassprueba.viewmodel
 
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.hninor.vassprueba.api.ApiResponseStatus
 import com.hninor.vassprueba.api.RickMortyRepository
 import com.hninor.vassprueba.api.entry.Info
 import com.hninor.vassprueba.api.entry.Results
@@ -16,7 +19,7 @@ import javax.inject.Inject
 class RickMortyViewModel @Inject constructor(private val repository: RickMortyRepository) :
     ViewModel() {
 
-
+    val snackbarHostState = SnackbarHostState()
     var characters by mutableStateOf(listOf<Results>())
         private set
 
@@ -33,8 +36,16 @@ class RickMortyViewModel @Inject constructor(private val repository: RickMortyRe
     private fun loadCharacters() {
         viewModelScope.launch {
             val response = repository.fetchCharacters(page!!)
-            characters = characters + response.results
-            info = response.info
+            if (response is ApiResponseStatus.Success) {
+                characters = characters + response.data.results
+                info = response.data.info
+            } else if (response is ApiResponseStatus.Error) {
+                snackbarHostState.showSnackbar(
+                    message = response.message,
+                    duration = SnackbarDuration.Short
+                )
+            }
+
         }
     }
 
