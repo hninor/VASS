@@ -5,24 +5,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.hninor.vassprueba.screens.LaunchList
+import com.hninor.vassprueba.screens.CharacterDetails
+import com.hninor.vassprueba.screens.CharacterList
 import com.hninor.vassprueba.ui.theme.VassPruebaTheme
 import com.hninor.vassprueba.viewmodel.RickMortyViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +35,8 @@ class MainActivity : ComponentActivity() {
             VassPruebaTheme {
                 val snackbarHostState = remember { SnackbarHostState() }
                 // A surface container using the 'background' color from the theme
-                Scaffold(topBar = { TopAppBar({ Text(stringResource(R.string.app_name)) }) },
+                Scaffold(
+                    topBar = { TopAppBar({ Text(stringResource(R.string.app_name)) }) },
                     snackbarHost = { SnackbarHost(snackbarHostState) },
                 ) { paddingValues ->
                     Box(Modifier.padding(paddingValues)) {
@@ -51,16 +49,16 @@ class MainActivity : ComponentActivity() {
 }
 
 
-
 @Composable
 private fun MainNavHost(viewModel: RickMortyViewModel) {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = NavigationDestinations.LAUNCH_LIST) {
-        composable(route = NavigationDestinations.LAUNCH_LIST) {
-            LaunchList(
-                characters =  viewModel.characters,
-                onCharacterClick = { launchId ->
-                    navController.navigate("${NavigationDestinations.LAUNCH_DETAILS}/$launchId")
+    NavHost(navController, startDestination = NavigationDestinations.CHARACTER_LIST) {
+        composable(route = NavigationDestinations.CHARACTER_LIST) {
+            CharacterList(
+                characters = viewModel.characters,
+                onCharacterClick = { character ->
+                    viewModel.characterSelected = character
+                    navController.navigate(NavigationDestinations.CHARACTER_DETAILS)
                 },
                 onLoadNextPage = {
                     viewModel.loadNextPage()
@@ -69,12 +67,8 @@ private fun MainNavHost(viewModel: RickMortyViewModel) {
             )
         }
 
-        composable(route = "${NavigationDestinations.LAUNCH_DETAILS}/{${NavigationArguments.LAUNCH_ID}}") { navBackStackEntry ->
-/*            LaunchDetails(launchId = navBackStackEntry.arguments!!.getString(NavigationArguments.LAUNCH_ID)!!,
-                navigateToLogin = {
-                    navController.navigate(NavigationDestinations.LOGIN)
-                }
-            )*/
+        composable(route = NavigationDestinations.CHARACTER_DETAILS) { navBackStackEntry ->
+            CharacterDetails(character = viewModel.characterSelected)
         }
 
     }

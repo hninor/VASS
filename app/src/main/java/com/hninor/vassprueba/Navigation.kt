@@ -1,11 +1,8 @@
 package com.hninor.vassprueba
 
 object NavigationDestinations {
-    const val LAUNCH_LIST = "launchList"
-    const val LAUNCH_DETAILS = "launchDetails"
-    const val LOGIN = "login"
+    const val CHARACTER_LIST = "characterList"
+    const val CHARACTER_DETAILS = "characterDetails"
 }
 
-object NavigationArguments {
-    const val LAUNCH_ID = "launchId"
-}
+

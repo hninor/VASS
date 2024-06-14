@@ -28,15 +28,15 @@ import com.hninor.vassprueba.api.entry.Results
 
 
 @Composable
-fun LaunchList(
+fun CharacterList(
     characters: List<Results>,
-    onCharacterClick: (characterId: Int) -> Unit,
+    onCharacterClick: (character: Results) -> Unit,
     onLoadNextPage: () -> Unit
 ) {
 
     LazyColumn {
         items(characters) { character ->
-            LaunchItem(character = character, onClick = onCharacterClick)
+            CharacterItem(character = character, onClick = onCharacterClick)
         }
         item {
 
@@ -47,9 +47,9 @@ fun LaunchList(
 }
 
 @Composable
-private fun LaunchItem(character: Results, onClick: (characterId: Int) -> Unit) {
+private fun CharacterItem(character: Results, onClick: (character: Results) -> Unit) {
     ListItem(
-        modifier = Modifier.clickable { character.id?.let { onClick(it) } },
+        modifier = Modifier.clickable { onClick(character) },
         headlineContent = {
             // Mission name
             Text(text = "${character.name}")

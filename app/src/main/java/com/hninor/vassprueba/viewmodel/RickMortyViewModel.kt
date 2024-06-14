@@ -2,7 +2,6 @@ package com.hninor.vassprueba.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +24,8 @@ class RickMortyViewModel @Inject constructor(private val repository: RickMortyRe
 
     var info: Info? = null
 
+    lateinit var characterSelected: Results
+
     init {
         loadCharacters()
     }
@@ -33,7 +34,7 @@ class RickMortyViewModel @Inject constructor(private val repository: RickMortyRe
         viewModelScope.launch {
             val response = repository.fetchCharacters(page!!)
             characters = characters + response.results
-            info = repository.fetchCharacters(page!!).info
+            info = response.info
         }
     }
 
@@ -43,4 +44,6 @@ class RickMortyViewModel @Inject constructor(private val repository: RickMortyRe
             loadCharacters()
         }
     }
+
+
 }
