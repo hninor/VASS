@@ -3,6 +3,7 @@ package com.hninor.vassprueba
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,10 +24,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hninor.vassprueba.screens.LaunchList
 import com.hninor.vassprueba.ui.theme.VassPruebaTheme
+import com.hninor.vassprueba.viewmodel.RickMortyViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+
+    private val viewModel: RickMortyViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = { SnackbarHost(snackbarHostState) },
                 ) { paddingValues ->
                     Box(Modifier.padding(paddingValues)) {
-                        MainNavHost()
+                        MainNavHost(viewModel)
                     }
                 }
             }
@@ -48,14 +53,19 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-private fun MainNavHost() {
+private fun MainNavHost(viewModel: RickMortyViewModel) {
     val navController = rememberNavController()
     NavHost(navController, startDestination = NavigationDestinations.LAUNCH_LIST) {
         composable(route = NavigationDestinations.LAUNCH_LIST) {
             LaunchList(
+                characters =  viewModel.characters,
                 onCharacterClick = { launchId ->
                     navController.navigate("${NavigationDestinations.LAUNCH_DETAILS}/$launchId")
+                },
+                onLoadNextPage = {
+                    viewModel.loadNextPage()
                 }
+
             )
         }
 

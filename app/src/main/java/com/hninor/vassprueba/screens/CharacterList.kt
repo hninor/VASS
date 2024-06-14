@@ -31,7 +31,7 @@ import com.hninor.vassprueba.api.entry.Results
 fun LaunchList(
     characters: List<Results>,
     onCharacterClick: (characterId: Int) -> Unit,
-    onLoadMore: () -> Unit
+    onLoadNextPage: () -> Unit
 ) {
 
     LazyColumn {
@@ -41,7 +41,7 @@ fun LaunchList(
         item {
 
                 LoadingItem()
-                onLoadMore()
+                onLoadNextPage()
         }
     }
 }
